@@ -227,7 +227,7 @@ always @(posedge clk) begin
                     M1_W_req <= 1;
                     M1_addr <= write_addr;
                     M2_R_req <= 0;
-                    M2_W_data <= {convo_ans2[write_addr<<2],convo_ans2[(write_addr<<2)+1],convo_ans2[(write_addr<<2)+2],convo_ans2[(write_addr<<2)+3]};;
+                    M2_W_data <= {convo_ans2[write_addr<<2],convo_ans2[(write_addr<<2)+1],convo_ans2[(write_addr<<2)+2],convo_ans2[(write_addr<<2)+3]};
                     M2_W_req <= 1;
                     M2_addr <= write_addr;
                     write_addr <= write_addr + 1;
