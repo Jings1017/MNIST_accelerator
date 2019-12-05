@@ -1,0 +1,17 @@
+D:/ncku3/final_project/MNIST_accelerator/verilog/convo_tb.v {1 {vlog -work work -stats=none D:/ncku3/final_project/MNIST_accelerator/verilog/convo_tb.v
+Model Technology ModelSim PE Student Edition vlog 10.4a Compiler 2015.03 Apr  7 2015
+-- Compiling module conv
+-- Compiling module bram_sim
+-- Compiling module top_tb
+
+Top level modules:
+	top_tb
+
+} {} {}} D:/ncku3/final_project/MNIST_accelerator/verilog/conv.v {1 {vlog -work work -stats=none D:/ncku3/final_project/MNIST_accelerator/verilog/conv.v
+Model Technology ModelSim PE Student Edition vlog 10.4a Compiler 2015.03 Apr  7 2015
+-- Compiling module conv
+
+Top level modules:
+	conv
+
+} {} {}}

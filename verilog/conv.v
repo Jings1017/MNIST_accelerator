@@ -48,13 +48,13 @@ parameter bias = 8'hFF;
 reg [7:0]window[8:0];
 reg [2:0]global_state;
 reg [4:0]global_row_index;
-reg [1:0]current_line;
+reg [1:0]current_line;  // 
 reg [7:0]line_buffer1[27:0];
 reg [7:0]line_buffer2[27:0];
 reg [7:0]line_buffer3[27:0];
 reg [4:0]line_buf_setting_time;
-reg req_state; // 1 means asking date, 0 means data already
-reg [2:0]convolution_state;
+reg req_state; // 1 means asking data, 0 means data already
+reg [2:0]convolution_state; // 
 reg [15:0]convo_p1[8:0];
 reg [15:0]convo_p2[8:0];
 reg [7:0]kernel1[8:0];
@@ -109,26 +109,31 @@ always @(posedge clk) begin
         M2_W_req <= 0;
         M2_W_data <= 0;
         case (current_line)
+            // for line buffer 1
             2'b00:begin
+                // 7 筆
                 if(line_buf_setting_time < 7)begin
                     if(req_state)begin
                         M0_R_req <= 1;
                         M0_addr <= line_buf_setting_time;
-                        req_state <= 0;
+                        req_state <= 0; // data ready
                     end else begin
                         // data already
+                        // 分四個位置存 
                         line_buffer1[line_buf_setting_time<<2] <= M0_R_data[31:24];
                         line_buffer1[(line_buf_setting_time<<2)+1] <= M0_R_data[23:16];
                         line_buffer1[(line_buf_setting_time<<2)+2] <= M0_R_data[15:8];
                         line_buffer1[(line_buf_setting_time<<2)+3] <= M0_R_data[7:0];
-                        req_state <= 1;
+                        req_state <= 1; // asking data
+                        // time ++
                         line_buf_setting_time <= line_buf_setting_time + 1;
                     end
-                end else begin
+                end else begin // next data
                     line_buf_setting_time <= 0;
                     current_line <= current_line + 1;
                 end
             end
+            // for line buffer 2
             2'b01:begin
                 if(line_buf_setting_time < 7)begin
                     if(req_state)begin
@@ -149,6 +154,7 @@ always @(posedge clk) begin
                     current_line <= current_line + 1;
                 end
             end
+            // for line buffer 3
             2'b10:begin
                 if(line_buf_setting_time < 7)begin
                     if(req_state)begin
@@ -169,12 +175,12 @@ always @(posedge clk) begin
                     global_state <= 1;
                 end
             end 
-            default: 
+            default: begin end
         endcase
     end else if(start == 0 && global_state == 1)begin
         M0_W_req <= 0;
         M0_W_data <= 0;
-        M0_R_data <= 0;
+        //M0_R_data <= 0;
         M0_addr <= 0;
         M1_addr <= 0;
         M1_R_req <= 0;
@@ -198,8 +204,8 @@ always @(posedge clk) begin
         case (convolution_state)
             3'b000: begin
                 for(i = 0; i < 9; i = i + 1)begin
-                    convo_p1[i] <= $signed(kernel1[i])*signed(window[i]);
-                    convo_p2[i] <= $signed(kernel2[i])*signed(window[i]);
+                    convo_p1[i] <= $signed(kernel1[i])*$signed(window[i]);
+                    convo_p2[i] <= $signed(kernel2[i])*$signed(window[i]);
                 end
                 convolution_state <= convolution_state + 1;
             end
@@ -208,6 +214,7 @@ always @(posedge clk) begin
                 $signed(convo_p1[2])+$signed(convo_p1[3])+$signed(convo_p1[4])+
                 $signed(convo_p1[5])+$signed(convo_p1[6])+$signed(convo_p1[7])+
                 $signed(convo_p1[8]);
+                
                 convo_sum2 <= $signed(convo_p2[0])+$signed(convo_p2[1])+
                 $signed(convo_p2[2])+$signed(convo_p2[3])+$signed(convo_p2[4])+
                 $signed(convo_p2[5])+$signed(convo_p2[6])+$signed(convo_p2[7])+
@@ -227,7 +234,7 @@ always @(posedge clk) begin
                     M1_W_req <= 1;
                     M1_addr <= write_addr;
                     M2_R_req <= 0;
-                    M2_W_data <= {convo_ans2[write_addr<<2],convo_ans2[(write_addr<<2)+1],convo_ans2[(write_addr<<2)+2],convo_ans2[(write_addr<<2)+3]};
+                    M2_W_data <= {convo_ans2[write_addr<<2],convo_ans2[(write_addr<<2)+1],convo_ans2[(write_addr<<2)+2],convo_ans2[(write_addr<<2)+3]};//;
                     M2_W_req <= 1;
                     M2_addr <= write_addr;
                     write_addr <= write_addr + 1;
@@ -235,7 +242,7 @@ always @(posedge clk) begin
                 global_state <= 3;
                 convolution_state <= 0;
             end
-            default: 
+            default: begin end
         endcase
     end else if(global_state == 3)begin
         if(write_addr == 169)begin
@@ -261,7 +268,7 @@ always @(posedge clk) begin
                 req_state <= 0;
             end else begin
                 // data already
-                line_buffer3[line_buf_setting_time<<2] <= M0_R_data[31:24];
+                line_buffer3[line_buf_setting_time<<2]     <= M0_R_data[31:24];
                 line_buffer3[(line_buf_setting_time<<2)+1] <= M0_R_data[23:16];
                 line_buffer3[(line_buf_setting_time<<2)+2] <= M0_R_data[15:8];
                 line_buffer3[(line_buf_setting_time<<2)+3] <= M0_R_data[7:0];
