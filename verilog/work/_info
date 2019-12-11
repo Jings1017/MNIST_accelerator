@@ -9,7 +9,7 @@ z2
 cModel Technology
 dE:/Modeltech_pe_edu_10.4a/examples
 vbram_sim
-Z0 !s110 1575509550
+Z0 !s110 1576067214
 !i10b 1
 !s100 `Iad7C_TaC1jLKYYgoJQ50
 I:YQz>8:MIQKRRigOBaG7P1
@@ -23,7 +23,7 @@ Z4 OP;L;10.4a;61
 r1
 !s85 0
 31
-Z5 !s108 1575509550.000000
+Z5 !s108 1576067214.000000
 Z6 !s107 bram_sim.v|conv.v|D:/ncku3/final_project/MNIST_accelerator/verilog/convo_tb.v|
 Z7 !s90 -reportprogress|300|-work|work|-stats=none|D:/ncku3/final_project/MNIST_accelerator/verilog/convo_tb.v|
 !s101 -O0

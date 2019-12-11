@@ -48,13 +48,13 @@ parameter bias = 8'hFF;
 reg [7:0]window[8:0];
 reg [2:0]global_state;
 reg [4:0]global_row_index;
-reg [1:0]current_line;  // 
+reg [1:0]current_line;  
 reg [7:0]line_buffer1[27:0];
 reg [7:0]line_buffer2[27:0];
 reg [7:0]line_buffer3[27:0];
 reg [4:0]line_buf_setting_time;
 reg req_state; // 1 means asking data, 0 means data already
-reg [2:0]convolution_state; // 
+reg [2:0]convolution_state; 
 reg [15:0]convo_p1[8:0];
 reg [15:0]convo_p2[8:0];
 reg [7:0]kernel1[8:0];
@@ -108,6 +108,8 @@ always @(posedge clk) begin
         M2_R_req <= 0;
         M2_W_req <= 0;
         M2_W_data <= 0;
+        finish <=0;
+        finsish <=0;
         case (current_line)
             // for line buffer 1
             2'b00:begin
@@ -120,7 +122,7 @@ always @(posedge clk) begin
                     end else begin
                         // data already
                         // 分四個位置存 
-                        line_buffer1[line_buf_setting_time<<2] <= M0_R_data[31:24];
+                        line_buffer1[line_buf_setting_time<<2]     <= M0_R_data[31:24];
                         line_buffer1[(line_buf_setting_time<<2)+1] <= M0_R_data[23:16];
                         line_buffer1[(line_buf_setting_time<<2)+2] <= M0_R_data[15:8];
                         line_buffer1[(line_buf_setting_time<<2)+3] <= M0_R_data[7:0];
@@ -246,7 +248,7 @@ always @(posedge clk) begin
         endcase
     end else if(global_state == 3)begin
         if(write_addr == 169)begin
-            // finsish
+            // finish
             finish <= 1;
         end else if(global_row_index == 28) begin // maybe wrong
             // take new row

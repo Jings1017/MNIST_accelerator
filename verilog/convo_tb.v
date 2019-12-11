@@ -4,7 +4,7 @@
 
 `include "conv.v"
 `include "bram_sim.v"
-`define FSDB_ALL
+`define FSDB_ALL // first stage bootloader
 module top_tb;
 
   reg clk;
@@ -65,6 +65,7 @@ module top_tb;
     .start(start),
     .finish(fin)
   );
+
   // bram for `fix_input_0.hex`
   bram_sim M0(
     .rst(rst),
@@ -135,9 +136,9 @@ module top_tb;
     $fclose(gf1);
 
     #20
-    start =1;
+    start = 1;
     #(`CYCLE)
-    start =0;
+    start = 0;
     wait(fin);
     #(`CYCLE*2)
     #20 
